@@ -13,12 +13,16 @@ public class EnemySpawnScript : MonoBehaviour
     public GameObject player;
 
     private List<EnemyScript> enemies;
+    private Coroutine spawnEnemies;
+
+    private List<EnemyScript> collectables;
+    private Coroutine spawnCollectables;
 
     // Use this for initialization
     void Start ()
     {
         enemies = new List<EnemyScript>();
-        StartCoroutine(SpawnEnemies());
+        spawnEnemies = StartCoroutine(SpawnEnemies());
     }
 	
 	// Update is called once per frame
@@ -27,7 +31,13 @@ public class EnemySpawnScript : MonoBehaviour
 		
 	}
 
-    public void CreateEnemy()
+    public void Stop()
+    {
+        if (spawnEnemies != null)
+            StopCoroutine(spawnEnemies);
+    }
+
+    private void CreateEnemy()
     {
         GameObject enemy = new GameObject("Enemy");
         enemy.transform.position = spawnPoints[Random.Range(0, spawnPoints.Count - 1)].transform.position;

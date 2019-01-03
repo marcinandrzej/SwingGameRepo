@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyScript : MonoBehaviour
+public class EnemyScript : CollisionScript
 {
     private const float MIN_SPEED = 10.0f;
     private const float MAX_SPEED = 15.0f;
@@ -36,6 +36,12 @@ public class EnemyScript : MonoBehaviour
     {
 		
 	}
+
+    public override void OnCollision(PlayerScript player)
+    {
+        player.DamageHeal(1);
+        gameObject.transform.position = new Vector3(dist, 0, 0);
+    }
 
     public void SetAnimator(RuntimeAnimatorController animator)
     {

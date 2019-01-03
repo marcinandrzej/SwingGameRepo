@@ -112,6 +112,19 @@ public class HookScript : MonoBehaviour
         }
     }
 
+    public void End()
+    {
+        if (shot != null)
+        {
+            StopCoroutine(shot);
+        }
+        if (climb != null)
+        {
+            StopCoroutine(climb);
+        }
+        ClearLine();
+    }
+
     private void ClearLine()
     {
         gameObject.GetComponent<HingeJoint2D>().enabled = false;
