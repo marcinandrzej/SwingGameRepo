@@ -39,8 +39,11 @@ public class EnemyScript : CollisionScript
 
     public override void OnCollision(PlayerScript player)
     {
-        player.DamageHeal(1);
-        gameObject.transform.position = new Vector3(dist, 0, 0);
+        if (!player.dead)
+        {
+            player.DamageHeal(1);
+            gameObject.transform.position = new Vector3(dist, 0, 0);
+        }
     }
 
     public void SetAnimator(RuntimeAnimatorController animator)

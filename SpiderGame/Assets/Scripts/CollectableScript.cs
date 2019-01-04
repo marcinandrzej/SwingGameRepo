@@ -42,16 +42,19 @@ public class CollectableScript : CollisionScript
 
     public override void OnCollision(PlayerScript player)
     {
-        if (heal)
+        if (!player.dead)
         {
-            player.DamageHeal(-1);
+            if (heal)
+            {
+                player.DamageHeal(-1);
+            }
+            else
+            {
+                player.Collect(1);
+            }
+            gameObject.transform.position = new Vector3(100, 0, 0);
+            inUse = false;
+            css.Spawn();
         }
-        else
-        {
-            player.Collect(1);
-        }
-        gameObject.transform.position = new Vector3(100, 0, 0);
-        inUse = false;
-        css.Spawn();
     }
 }

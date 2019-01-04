@@ -12,7 +12,6 @@ public class HookScript : MonoBehaviour
     private List<GameObject> nodes;
     private GameObject hook;
     private Coroutine shot;
-    private Coroutine climb;
 
     // Use this for initialization
     void Start ()
@@ -27,21 +26,17 @@ public class HookScript : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
         {
             Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             CreateHook();
             shot = StartCoroutine(Shoot(hook, pos));
         }
-        if (Input.GetMouseButtonUp(0))
+        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended || Input.touchCount == 0)
         {
             if (shot != null)
             {
                 StopCoroutine(shot);
-            }
-            if (climb != null)
-            {
-                StopCoroutine(climb);
             }
             ClearLine();
         }
@@ -70,18 +65,9 @@ public class HookScript : MonoBehaviour
         lineRenderer.enabled = true;
     }
 
-    private void CreateNode()
-    {
-        GameObject node = new GameObject("node");
-        node.transform.position = transform.position;
-        node.transform.SetParent(hook.transform);
-        node.AddComponent<Rigidbody2D>();
-        node.AddComponent<HingeJoint2D>();
-        nodes.Add(node);
-    }
-
     private IEnumerator Shoot(GameObject hook, Vector2 destiny)
     {
+        //shoot
         while ((Vector2)hook.transform.position != destiny)
         {
             hook.transform.position = Vector2.MoveTowards((Vector2)hook.transform.position, destiny, 50f * Time.deltaTime);
@@ -90,7 +76,26 @@ public class HookScript : MonoBehaviour
         }
         ConnectNodes();
         yield return new WaitForEndOfFrame();
-        climb = StartCoroutine(Climb());
+        //climb
+        while (gameObject.transform.position != nodes[nodes.Count - 1].transform.position && nodes.Count > 1)
+        {
+            gameObject.transform.position = Vector2.MoveTowards(gameObject.transform.position,
+                nodes[nodes.Count - 1].transform.position, 10f * Time.deltaTime);
+            if (gameObject.transform.position == nodes[nodes.Count - 1].transform.position)
+                DeleteNode();
+            yield return new WaitForEndOfFrame();
+        }
+        yield return new WaitForEndOfFrame();
+    }
+
+    private void CreateNode()
+    {
+        GameObject node = new GameObject("node");
+        node.transform.position = transform.position;
+        node.transform.SetParent(hook.transform);
+        node.AddComponent<Rigidbody2D>();
+        node.AddComponent<HingeJoint2D>();
+        nodes.Add(node);
     }
 
     private void CheckNodes()
@@ -118,10 +123,6 @@ public class HookScript : MonoBehaviour
         {
             StopCoroutine(shot);
         }
-        if (climb != null)
-        {
-            StopCoroutine(climb);
-        }
         ClearLine();
     }
 
@@ -139,19 +140,6 @@ public class HookScript : MonoBehaviour
             }
             nodes = new List<GameObject>();
         }
-    }
-
-    private IEnumerator Climb()
-    {
-        while (gameObject.transform.position != nodes[nodes.Count - 1].transform.position && nodes.Count > 1)
-        {
-            gameObject.transform.position = Vector2.MoveTowards(gameObject.transform.position,
-                nodes[nodes.Count - 1].transform.position, 10f * Time.deltaTime);
-            if (gameObject.transform.position == nodes[nodes.Count - 1].transform.position)
-                DeleteNode();
-            yield return new WaitForEndOfFrame();
-        }
-        yield return new WaitForEndOfFrame();
     }
 
     private void DeleteNode()

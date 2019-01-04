@@ -31,8 +31,6 @@ public class CollectableSpawnScript : MonoBehaviour
             g.GetComponent<CollectableScript>().Set(this, false);
             collectables.Add(g.GetComponent<CollectableScript>());
         }
-        Spawn();
-        Spawn();
     }
 
     private List<CollectableScript> Available()

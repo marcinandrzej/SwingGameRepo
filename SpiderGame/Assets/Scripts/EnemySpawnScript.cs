@@ -22,7 +22,6 @@ public class EnemySpawnScript : MonoBehaviour
     void Start ()
     {
         enemies = new List<EnemyScript>();
-        spawnEnemies = StartCoroutine(SpawnEnemies());
     }
 	
 	// Update is called once per frame
@@ -30,6 +29,11 @@ public class EnemySpawnScript : MonoBehaviour
     {
 		
 	}
+
+    public void StartSpawn()
+    {
+        spawnEnemies = StartCoroutine(SpawnEnemies());
+    }
 
     public void Stop()
     {
